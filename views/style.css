@@ -1,0 +1,77 @@
+[v-cloak] {
+  display: none;
+}
+.add {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+}
+.add input {
+  line-height: 25px;
+  border: 1px solid #666;
+  padding: 0 10px;
+}
+.add button {
+  margin-left: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+span {
+  position: relative;
+  display: block;
+}
+span::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+p { 
+  color: #666;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+p.finish {
+  color: #999;
+  text-decoration: line-through;
+}
+i {
+  color: #999;
+  font-size: 12px;
+  font-style: normal;
+  border: 1px solid #999;
+  border-radius: 5px;
+  display: block;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+.toast-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toast-tip {
+  color: #fff;
+  font-size: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 10px;
+}

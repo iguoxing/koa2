@@ -1,0 +1,136 @@
+<!--
+ * @Author: ArdenZhao
+ * @Date: 2022-01-12 18:17:48
+ * @LastEditors: Do not edit
+ * @LastEditTime: 2022-01-12 18:17:48
+ * @FilePath: /koa2/views/index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>todo-list</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <h2>TodoList</h2>
+    <div class="add">
+      <input type="text" v-model.trim="inputValue">
+      <button @click="addTodo">新增</button>
+    </div>
+    <hr>
+    <ul>
+      <li v-for="item in todoList" :key="item.id">
+        <span @click="changeState(item)">
+          <input type="checkbox" :checked="!!item.finish">
+        </span>
+        <p :class="{'finish': item.finish}">{{ item.content }}</p>
+        <i @click="deleteTodo(item)">删除</i>
+      </li>
+    </ul>
+    <div class="toast-wrap" v-show="show" @click="show=false">
+      <p class="toast-tip">{{ currentToast }}</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        inputValue: '',
+        todoList: [],
+        // toast插件
+        show: false,
+        currentToast: '',
+        timerIns: null
+      },
+      created() {
+        this.getList()
+      },
+      methods: {
+        getList() {
+          fetch("/getTodos").then(response => {
+            return response.json()
+          }).then(res => {
+            if (res.code === 0) {
+              this.todoList = res.data
+            }
+          })
+        },
+        addTodo() {
+          if (!this.inputValue) {
+            this.showToast("新增内容不能为空~")
+            return
+          }
+          fetch("/addTodo", {
+            method: "POST",
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify({ content: this.inputValue })
+          }).then(response => {
+            return response.json()
+          }).then(res => {
+            if (res.code === 0) {
+              this.inputValue = ''
+              this.getList()
+            } else {
+              this.showToast(res.msg)
+            }
+          })
+        },
+        changeState(info) {
+          fetch("/changeState", {
+            method: "POST",
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify({ id: info.id, finish: info.finish })
+          }).then(response => {
+            return response.json()
+          }).then(res => {
+            if (res.code === 0) {
+              this.getList()
+            } else {
+              this.showToast(res.msg)
+            }
+          })
+        },
+        deleteTodo(info) {
+          fetch("/deleteTodo", {
+            method: "POST",
+            headers: {
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify({ id: info.id })
+          }).then(response => {
+            return response.json()
+          }).then(res => {
+            if (res.code === 0) {
+              this.getList()
+            } else {
+              this.showToast(res.msg)
+            }
+          })
+        },
+        // toast
+        showToast(msg) {
+          this.show = true
+          this.currentToast = msg
+          this.timerIns = setTimeout(() => {
+            this.show = false
+            this.currentToast = ''
+            this.timerIns = null
+          }, 3000)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
